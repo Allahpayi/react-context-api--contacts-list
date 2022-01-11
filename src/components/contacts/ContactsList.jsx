@@ -3,7 +3,6 @@ import { Table, Space, Button } from "antd";
 import ContactContext from "../../context/contact/contact-context";
 import { Link } from "react-router-dom";
 import { Info, Delete, Edit, Add } from "../../assets/icons/index";
-import classes from "./contacts-list.module.scss";
 
 const columns = [
   {
@@ -34,10 +33,7 @@ const columns = [
         <a>
           <Info />
         </a>
-        <Link
-          onClick={() => handler(contact)}
-          to={"/contacts/edit/" + contact.key}
-        >
+        <Link to={"/contacts/edit/" + contact.key}>
           <Edit />
         </Link>
         <a>
@@ -47,13 +43,10 @@ const columns = [
     ),
   },
 ];
-const handler = (data) => {
-  console.log(data);
-};
+
 const ContactsList = () => {
   const ctx = useContext(ContactContext);
   let dataSource = ctx.contacts;
-  console.log(ctx);
   return (
     <>
       <Link to="/contacts/add">

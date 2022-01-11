@@ -1,34 +1,12 @@
 import { useEffect, useReducer } from "react";
 import ContactContext from "./contact-context";
-
-let defaultState = [
-  {
-    key: 1,
-    name: "Ali",
-    lastName: "Gulmaliyev",
-    fatherName: "Vüqar",
-    profession: "Frontend Developer",
-  },
-  {
-    key: 2,
-    name: "Mustafa",
-    lastName: "Mustafayev",
-    fatherName: "Mustafa",
-    profession: "Backend Developer",
-  },
-  {
-    key: 3,
-    name: "Mirəli",
-    lastName: "Nağızadə",
-    fatherName: "Zaur",
-    profession: "Engneer",
-  },
-];
+import PropTypes from "prop-types";
 
 const contactReducer = (state, action) => {
   switch (action.type) {
-    case "ADD":
-      return state;
+    case "ADD": {
+      return [...state, action.contact];
+    }
     case "UPDATE":
       return state;
     case "REMOVE":
@@ -41,7 +19,7 @@ const contactReducer = (state, action) => {
 const ContactProvider = (props) => {
   const [contacts, dispatchContactAction] = useReducer(
     contactReducer,
-    defaultState,
+    [],
     () => {
       const localContacts = localStorage.getItem("contacts");
       return localContacts ? JSON.parse(localContacts) : [];
@@ -73,6 +51,9 @@ const ContactProvider = (props) => {
       {props.children}
     </ContactContext.Provider>
   );
+};
+ContactProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default ContactProvider;
