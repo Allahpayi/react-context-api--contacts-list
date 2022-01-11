@@ -1,7 +1,7 @@
 import React from "react";
 
 const ContactContext = React.createContext({
-  contact: [],
+  contacts: [],
   addContact: (contact) => {},
   updateContact: (contact) => {},
   removeContact: (id) => {},

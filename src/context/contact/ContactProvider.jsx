@@ -1,9 +1,5 @@
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import ContactContext from "./contact-context";
-
-const initialState = {
-  contact: [],
-};
 
 const contactReducer = (state, action) => {
   switch (action.type) {
@@ -19,10 +15,19 @@ const contactReducer = (state, action) => {
 };
 
 const ContactProvider = (props) => {
-  const [contactState, dispatchContactAction] = useReducer(
+  const [contacts, dispatchContactAction] = useReducer(
     contactReducer,
-    initialState
+    [],
+    () => {
+      const localContacts = localStorage.getItem("contacts");
+      return localContacts ? JSON.parse(localContacts) : [];
+    }
   );
+
+  useEffect(() => {
+    localStorage.setItem("contacts", JSON.stringify(contacts));
+  }, [contacts]);
+
   const addContactHandler = (contact) => {
     dispatchContactAction({ type: "ADD", contact });
   };
@@ -33,7 +38,7 @@ const ContactProvider = (props) => {
     dispatchContactAction({ type: "REMOVE", id });
   };
   const contactContext = {
-    contact: contactState.contact,
+    contacts,
     addContact: addContactHandler,
     updateContact: updateContactHandler,
     removeContact: removeContactHandler,
