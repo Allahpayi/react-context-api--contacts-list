@@ -30,7 +30,7 @@ function App() {
                 <Route path="/" element={<Navigate to="/contacts" />} />
                 <Route path="/contacts" element={<ContactsList />} />
                 <Route path="/contacts/add" element={<AddContact />} />
-                <Route path="/contacts/add/:id" element={<EditContact />} />
+                <Route path="/contacts/edit/:id" element={<EditContact />} />
               </Routes>
             </Content>
           </Layout>

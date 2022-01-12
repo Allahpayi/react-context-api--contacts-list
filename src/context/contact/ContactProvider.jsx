@@ -7,10 +7,18 @@ const contactReducer = (state, action) => {
     case "ADD": {
       return [...state, action.contact];
     }
-    case "UPDATE":
+    case "UPDATE": {
+      let selectedContact = state.find(
+        (contact) => contact.key === action.contact.key
+      );
+      let index = state.indexOf(selectedContact);
+      state[index] = action.contact;
       return state;
-    case "REMOVE":
-      return state;
+    }
+    case "REMOVE": {
+      let newState = state.filter((contact) => contact.key !== action.id);
+      return newState;
+    }
     default:
       return state;
   }

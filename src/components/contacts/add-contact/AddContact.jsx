@@ -1,45 +1,60 @@
 import React, { useContext, useState } from "react";
-import { Form, Input, Select, Radio, Button, Row, Divider, Col } from "antd";
+import {
+  Form,
+  Input,
+  Select,
+  Radio,
+  Button,
+  Row,
+  Divider,
+  Col,
+  Checkbox,
+  Space,
+} from "antd";
 import ContactContext from "../../../context/contact/contact-context";
 import { useToasts } from "react-toast-notifications";
 import { useNavigate } from "react-router-dom";
-import {} from "antd";
+import uuid from "react-uuid";
 
 const { Option } = Select;
 const AddContact = () => {
-  const ctx = useContext(ContactContext);
   const navigate = useNavigate();
+  const ctx = useContext(ContactContext);
+
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const [fatherName, setFatherName] = useState("");
   const [profession, setProfession] = useState("Frontend Developer");
   const [gender, setGender] = useState("");
+  const [innovators, setInnovators] = useState(false);
   const { addToast } = useToasts();
 
   const contact = {
-    key: Math.random(),
+    key: uuid(),
     name,
     lastName,
     fatherName,
     profession,
     gender,
+    innovators,
   };
 
-  const onFinish = (contact) => {
+  const onFinish = () => {
     addToast(contact.name + " added to the contacts", {
       appearance: "success",
       autoDismiss: true,
     });
+    ctx.addContact(contact);
     setTimeout(() => navigate("/", { replace: true }), 100);
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
-
-  const createContactHandler = () => {
-    console.log(contact);
-    ctx.addContact(contact);
+    errorInfo.errorFields.map((field) => {
+      addToast(field.errors[0], {
+        appearance: "error",
+        autoDismiss: true,
+      });
+    });
   };
 
   return (
@@ -120,23 +135,34 @@ const AddContact = () => {
                 <Option value="Android Developer">Android Developer</Option>
               </Select>
             </Form.Item>
-            <Form.Item label="Gender" name="gender">
-              <Radio.Group onChange={(e) => setGender(e.target.value)}>
-                <Radio value="male">Male</Radio>
-                <Radio value="female">Female</Radio>
-              </Radio.Group>
-            </Form.Item>
+            <Space>
+              <Form.Item
+                name="gender"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your gender!",
+                  },
+                ]}
+              >
+                <Radio.Group onChange={(e) => setGender(e.target.value)}>
+                  <Radio value="male">Male</Radio>
+                  <Radio value="female">Female</Radio>
+                </Radio.Group>
+              </Form.Item>
+              <Form.Item>
+                <Checkbox onChange={(e) => setInnovators(e.target.checked)}>
+                  Want to stay up to date?
+                </Checkbox>
+              </Form.Item>
+            </Space>
             <Form.Item
               wrapperCol={{
                 offset: 10,
                 span: 24,
               }}
             >
-              <Button
-                onClick={createContactHandler}
-                type="primary"
-                htmlType="submit"
-              >
+              <Button type="primary" htmlType="submit">
                 Add Contact
               </Button>
             </Form.Item>
