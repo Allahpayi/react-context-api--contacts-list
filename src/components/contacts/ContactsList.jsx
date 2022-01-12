@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
-import { Table, Space, Button, Modal } from "antd";
+import { Table, Card, Avatar, Space, Button, Modal } from "antd";
 import ContactContext from "../../context/contact/contact-context";
 import { Link } from "react-router-dom";
 import { Info, Delete, Edit, Add, Exclamation } from "../../assets/icons/index";
 import CustomModal from "../modal/Modal";
+import { capitalize } from "../../utils/Capitalize";
 
-const { confirm } = Modal;
+const { confirm, info } = Modal;
 
 const ContactsList = () => {
   const ctx = useContext(ContactContext);
@@ -37,12 +38,12 @@ const ContactsList = () => {
       key: "action",
       render: (text, contact) => (
         <Space size="middle">
-          <Button icon={<Info />} type="link" />
+          <CustomModal onClick={() => showInfoModal(contact)} icon={<Info />} />
           <Link to={"/contacts/edit/" + contact.key}>
             <Edit />
           </Link>
           <CustomModal
-            onClick={() => showDeleteConfirm(contact)}
+            onClick={() => showDeleteModal(contact)}
             icon={<Delete />}
           />
         </Space>
@@ -50,7 +51,7 @@ const ContactsList = () => {
     },
   ];
 
-  const showDeleteConfirm = (contact) => {
+  const showDeleteModal = (contact) => {
     const { key, name, lastName } = contact;
     confirm({
       title: "Are you sure delete this contact?",
@@ -63,6 +64,31 @@ const ContactsList = () => {
         ctx.removeContact(key);
       },
     });
+  };
+  const showInfoModal = (contact) => {
+    info({
+      title: "Contact Info",
+      icon: <Exclamation />,
+      content: showInfo(contact),
+      cancelText: "OK",
+    });
+  };
+  const showInfo = (contact) => {
+    return (
+      <Card
+        actions={[
+          <p key={contact.fatherName}>{capitalize(contact.fatherName)}</p>,
+          <p key={contact.gender}>{capitalize(contact.gender)}</p>,
+          <p key={contact.innovators}>{contact.innovators ? "Yes" : "No"}</p>,
+        ]}
+      >
+        <Card.Meta
+          avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
+          title={capitalize(contact.name) + " " + capitalize(contact.lastName)}
+          description={capitalize(contact.profession)}
+        />
+      </Card>
+    );
   };
   return (
     <>
