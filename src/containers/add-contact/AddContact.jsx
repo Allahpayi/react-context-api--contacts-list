@@ -11,28 +11,26 @@ import {
   Checkbox,
   Space,
 } from "antd";
-import ContactContext from "../../../context/contact/contact-context";
+import ContactContext from "../../context/contact/contact-context";
 import { useToasts } from "react-toast-notifications";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import uuid from "react-uuid";
 
 const { Option } = Select;
-const EditContact = () => {
-  const ctx = useContext(ContactContext);
+const AddContact = () => {
   const navigate = useNavigate();
-  const params = useParams();
-  const selectedContact = ctx.contacts.find(
-    (contact) => contact.key === params.id
-  );
-  const [name, setName] = useState(selectedContact.name);
-  const [lastName, setLastName] = useState(selectedContact.lastName);
-  const [fatherName, setFatherName] = useState(selectedContact.fatherName);
-  const [profession, setProfession] = useState(selectedContact.profession);
-  const [gender, setGender] = useState(selectedContact.gender);
-  const [innovators, setInnovators] = useState(selectedContact.innovators);
+  const ctx = useContext(ContactContext);
+
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [fatherName, setFatherName] = useState("");
+  const [profession, setProfession] = useState("Frontend Developer");
+  const [gender, setGender] = useState("");
+  const [innovators, setInnovators] = useState(false);
   const { addToast } = useToasts();
 
   const contact = {
-    key: selectedContact.key,
+    key: uuid(),
     name,
     lastName,
     fatherName,
@@ -41,28 +39,15 @@ const EditContact = () => {
     innovators,
   };
 
-  const onFinish = (response) => {
-    if (
-      response.name !== contact.name ||
-      response.lastName !== contact.lastName ||
-      response.fatherName !== contact.fatherName ||
-      response.profession !== contact.profession ||
-      response.gender !== contact.gender ||
-      response.innovators !== contact.innovators
-    ) {
-      addToast("The contact updated.", {
-        appearance: "success",
-        autoDismiss: true,
-      });
-      ctx.updateContact(contact);
-      setTimeout(() => navigate("/", { replace: true }), 100);
-    } else {
-      addToast("No change!", {
-        appearance: "error",
-        autoDismiss: true,
-      });
-    }
+  const onFinish = () => {
+    addToast(contact.name + " added to the contacts", {
+      appearance: "success",
+      autoDismiss: true,
+    });
+    ctx.addContact(contact);
+    setTimeout(() => navigate("/", { replace: true }), 100);
   };
+
   const onFinishFailed = (errorInfo) => {
     errorInfo.errorFields.map((field) => {
       addToast(field.errors[0], {
@@ -71,6 +56,7 @@ const EditContact = () => {
       });
     });
   };
+
   return (
     <>
       <Divider orientation="left">Add Contact</Divider>
@@ -86,11 +72,7 @@ const EditContact = () => {
               span: 24,
             }}
             initialValues={{
-              name,
-              lastName,
-              fatherName,
               profession,
-              gender,
             }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
@@ -168,11 +150,8 @@ const EditContact = () => {
                   <Radio value="female">Female</Radio>
                 </Radio.Group>
               </Form.Item>
-              <Form.Item name="innovators">
-                <Checkbox
-                  checked={innovators}
-                  onChange={(e) => setInnovators(e.target.checked)}
-                >
+              <Form.Item>
+                <Checkbox onChange={(e) => setInnovators(e.target.checked)}>
                   Want to stay up to date?
                 </Checkbox>
               </Form.Item>
@@ -184,7 +163,7 @@ const EditContact = () => {
               }}
             >
               <Button type="primary" htmlType="submit">
-                Update Contact
+                Add Contact
               </Button>
             </Form.Item>
           </Form>
@@ -194,4 +173,4 @@ const EditContact = () => {
   );
 };
 
-export default EditContact;
+export default AddContact;
