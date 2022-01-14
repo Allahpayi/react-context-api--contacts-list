@@ -8,6 +8,8 @@ const ContactContext = React.createContext({
   updateContact: (contact) => {},
   // eslint-disable-next-line
   removeContact: (id) => {},
+  // eslint-disable-next-line
+  removeAllContact: (selectedContact) => {},
 });
 
 export default ContactContext;

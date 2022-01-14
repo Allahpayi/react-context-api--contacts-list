@@ -1,13 +1,14 @@
 import { useEffect, useReducer } from "react";
 import ContactContext from "./contact-context";
 import PropTypes from "prop-types";
+import * as actionTypes from "../constants/actionTypes";
 
 const contactReducer = (state, action) => {
   switch (action.type) {
-    case "ADD": {
+    case actionTypes.NEW_CONTACT: {
       return [...state, action.contact];
     }
-    case "UPDATE": {
+    case actionTypes.EDIT_CONTACT: {
       let selectedContact = state.find(
         (contact) => contact.key === action.contact.key
       );
@@ -15,7 +16,7 @@ const contactReducer = (state, action) => {
       state[index] = action.contact;
       return state;
     }
-    case "REMOVE": {
+    case actionTypes.DELETE_CONTACT: {
       let newState = state.filter((contact) => contact.key !== action.id);
       return newState;
     }
@@ -39,13 +40,13 @@ const ContactProvider = (props) => {
   }, [contacts]);
 
   const addContactHandler = (contact) => {
-    dispatchContactAction({ type: "ADD", contact });
+    dispatchContactAction({ type: actionTypes.NEW_CONTACT, contact });
   };
   const updateContactHandler = (contact) => {
-    dispatchContactAction({ type: "UPDATE", contact });
+    dispatchContactAction({ type: actionTypes.EDIT_CONTACT, contact });
   };
   const removeContactHandler = (id) => {
-    dispatchContactAction({ type: "REMOVE", id });
+    dispatchContactAction({ type: actionTypes.DELETE_CONTACT, id });
   };
   const contactContext = {
     contacts,

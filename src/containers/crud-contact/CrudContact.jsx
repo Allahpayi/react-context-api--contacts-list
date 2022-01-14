@@ -14,25 +14,35 @@ import {
 import ContactContext from "../../context/contact/contact-context";
 import { useToasts } from "react-toast-notifications";
 import { useNavigate, useParams } from "react-router-dom";
+import uuid from "react-uuid";
 
 const { Option } = Select;
-const EditContact = () => {
+
+const CrudContact = () => {
   const ctx = useContext(ContactContext);
   const navigate = useNavigate();
   const params = useParams();
+  const id = params.id;
   const selectedContact = ctx.contacts.find(
     (contact) => contact.key === params.id
   );
-  const [name, setName] = useState(selectedContact.name);
-  const [lastName, setLastName] = useState(selectedContact.lastName);
-  const [fatherName, setFatherName] = useState(selectedContact.fatherName);
-  const [profession, setProfession] = useState(selectedContact.profession);
-  const [gender, setGender] = useState(selectedContact.gender);
-  const [innovators, setInnovators] = useState(selectedContact.innovators);
+
+  const [name, setName] = useState(id && selectedContact.name);
+  const [lastName, setLastName] = useState(id && selectedContact.lastName);
+  const [fatherName, setFatherName] = useState(
+    id && selectedContact.fatherName
+  );
+  const [profession, setProfession] = useState(
+    id ? selectedContact.profession : "Frontend Developer"
+  );
+  const [gender, setGender] = useState(id && selectedContact.gender);
+  const [innovators, setInnovators] = useState(
+    id && selectedContact.innovators
+  );
   const { addToast } = useToasts();
 
   const contact = {
-    key: selectedContact.key,
+    key: id ? selectedContact.key : uuid(),
     name,
     lastName,
     fatherName,
@@ -41,15 +51,15 @@ const EditContact = () => {
     innovators,
   };
 
-  const onFinish = (response) => {
-    if (
-      response.name !== contact.name ||
-      response.lastName !== contact.lastName ||
-      response.fatherName !== contact.fatherName ||
-      response.profession !== contact.profession ||
-      response.gender !== contact.gender ||
-      response.innovators !== contact.innovators
-    ) {
+  const professions = [
+    "Frontend Developer",
+    "Backend Developer",
+    "UI/UX Developer",
+    "Android Developer",
+  ];
+
+  const onFinish = () => {
+    if (id) {
       addToast("The contact updated.", {
         appearance: "success",
         autoDismiss: true,
@@ -57,10 +67,12 @@ const EditContact = () => {
       ctx.updateContact(contact);
       setTimeout(() => navigate("/", { replace: true }), 100);
     } else {
-      addToast("No change!", {
-        appearance: "error",
+      addToast(contact.name + " added to the contacts", {
+        appearance: "success",
         autoDismiss: true,
       });
+      ctx.addContact(contact);
+      setTimeout(() => navigate("/", { replace: true }), 100);
     }
   };
   const onFinishFailed = (errorInfo) => {
@@ -73,12 +85,14 @@ const EditContact = () => {
   };
   return (
     <>
-      <Divider orientation="left">Add Contact</Divider>
+      <Divider orientation="left">
+        {id ? "Update Contact: " + selectedContact.name : "Add Contact"}
+      </Divider>
       <Row justify="center">
         <Col span={8}>
           <Form
             layout="vertical"
-            name="addContact"
+            name="crudContactForm"
             labelCol={{
               span: 24,
             }}
@@ -147,10 +161,11 @@ const EditContact = () => {
                   setProfession(value);
                 }}
               >
-                <Option value="Frontend Developer">Frontend Developer</Option>
-                <Option value="Backend Developer">Backend Developer</Option>
-                <Option value="UI/UX Developer">UI/UX Developer</Option>
-                <Option value="Android Developer">Android Developer</Option>
+                {professions.map((profession, index) => (
+                  <Option key={index} value={profession}>
+                    {profession}
+                  </Option>
+                ))}
               </Select>
             </Form.Item>
             <Space>
@@ -184,7 +199,7 @@ const EditContact = () => {
               }}
             >
               <Button type="primary" htmlType="submit">
-                Update Contact
+                {id ? "Update Contact" : "Add Contact"}
               </Button>
             </Form.Item>
           </Form>
@@ -194,4 +209,4 @@ const EditContact = () => {
   );
 };
 
-export default EditContact;
+export default CrudContact;

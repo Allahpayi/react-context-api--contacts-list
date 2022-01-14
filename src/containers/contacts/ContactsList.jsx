@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Delete, Edit, Add } from "../../assets/icons/index";
 import Confirm from "../../components/modals/confirm/Confirm";
 import ContactInfo from "../../components/contact-info/ContactInfo";
-import classes from "./contacts-list.module.scss";
+import classes from "./ContactsList.module.scss";
 
 const ContactsList = () => {
   const ctx = useContext(ContactContext);
@@ -18,21 +18,25 @@ const ContactsList = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Last Name",
       dataIndex: "lastName",
       key: "lastName",
+      sorter: (a, b) => a.lastName.length - b.lastName.length,
     },
     {
       title: "Father Name",
       dataIndex: "fatherName",
       key: "fatherName",
+      sorter: (a, b) => a.fatherName.length - b.fatherName.length,
     },
     {
       title: "Profession",
       dataIndex: "profession",
       key: "profession",
+      sorter: (a, b) => a.profession.length - b.profession.length,
     },
     {
       title: "Action",
@@ -59,15 +63,10 @@ const ContactsList = () => {
     <>
       <Table
         title={() => (
-          <Link
-            className={classes.link}
-            style={{ display: "block", textAlign: "right" }}
-            to="/contacts/add"
-          >
+          <Link className={classes.addContactBtn} to="/contacts/new">
             <Button type="primary" icon={<Add />} />
           </Link>
         )}
-        bordered
         dataSource={dataSource}
         columns={columns}
       />
