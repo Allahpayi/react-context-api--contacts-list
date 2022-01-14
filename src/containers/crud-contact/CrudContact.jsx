@@ -89,7 +89,7 @@ const CrudContact = () => {
         {id ? "Update Contact: " + selectedContact.name : "Add Contact"}
       </Divider>
       <Row justify="center">
-        <Col span={8}>
+        <Col md={{ span: 16 }} lg={{ span: 10 }} span={24}>
           <Form
             layout="vertical"
             name="crudContactForm"

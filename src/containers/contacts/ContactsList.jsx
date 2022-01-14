@@ -68,6 +68,7 @@ const ContactsList = () => {
         )}
         dataSource={dataSource}
         columns={columns}
+        scroll={{ x: 992 }}
       />
     </>
   );
