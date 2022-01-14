@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { Delete, Edit, Add } from "../../assets/icons/index";
 import Confirm from "../../components/modals/confirm/Confirm";
 import ContactInfo from "../../components/contact-info/ContactInfo";
-import classes from "./ContactsList.module.scss";
 
 const ContactsList = () => {
   const ctx = useContext(ContactContext);
@@ -63,7 +62,7 @@ const ContactsList = () => {
     <>
       <Table
         title={() => (
-          <Link className={classes.addContactBtn} to="/contacts/new">
+          <Link to="/contacts/new">
             <Button type="primary" icon={<Add />} />
           </Link>
         )}
